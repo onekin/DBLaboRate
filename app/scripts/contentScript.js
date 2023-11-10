@@ -1,12 +1,13 @@
-import Chart from 'chart.js/auto'
-// Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
-let myChart, myLargeChart
-let configuration // Move this declaration to the top level of your script
+import AuthorPositionChart from './charts/AuthorPositionChart.js'
+import AuthorCount from './charts/AuthorCount.js'
 
 const loadPage = function () {
   console.log('page loaded')
   let author = document.getElementById('headline')
   console.log('author: ' + author.dataset.name)
+  if (!window.dblpExtension) {
+    window.dblpExtension = {}
+  }
   let url = window.location.href
   const updatedURL = url.replace(/\.html$/, '.xml')
   fetch(updatedURL)
@@ -20,14 +21,17 @@ const loadPage = function () {
       // Handle the XML data here
       const parser = new DOMParser()
       let xmlDoc = parser.parseFromString(xmlData, 'application/xml')
-      loadChart(xmlDoc)
+      window.dblpExtension.authorCount = new AuthorCount()
+      window.dblpExtension.authorCount.init(xmlDoc)
+      window.dblpExtension.authorPositionChart = new AuthorPositionChart()
+      window.dblpExtension.authorPositionChart.init(xmlDoc)
     })
     .catch(error => {
       console.error('Error:', error)
     })
 }
 
-// Main function to handle the flow
+/* Main function to handle the flow
 async function loadChart (xmlDoc) {
   // Replace with the path to your XML file
   try {
@@ -202,6 +206,6 @@ function toggleChartModal (normalCanvas, largeCanvas, authorPositionCounts, enla
     // If needed, update the normal chart instance
     myChart.update()
   }
-}
+} */
 
 window.onload = loadPage
