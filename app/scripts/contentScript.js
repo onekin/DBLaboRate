@@ -1,5 +1,6 @@
 import AuthorPositionChart from './charts/AuthorPositionChart.js'
 import AuthorCount from './charts/AuthorCount.js'
+import AuthorCollaborations from './charts/AuthorCollaborations.js'
 
 const loadPage = function () {
   console.log('page loaded')
@@ -21,6 +22,8 @@ const loadPage = function () {
       // Handle the XML data here
       const parser = new DOMParser()
       let xmlDoc = parser.parseFromString(xmlData, 'application/xml')
+      window.dblpExtension.authorCollaborations = new AuthorCollaborations()
+      window.dblpExtension.authorCollaborations.init(xmlDoc)
       window.dblpExtension.authorCount = new AuthorCount()
       window.dblpExtension.authorCount.init(xmlDoc)
       window.dblpExtension.authorPositionChart = new AuthorPositionChart()
