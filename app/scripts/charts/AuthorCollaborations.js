@@ -7,87 +7,87 @@ class AuthorCollaborations {
     this.configuration = null
   }
 
-  async init (xmlDoc) {
+  async init (xmlDoc, closeColleagueParameter, acquaintanceParameter) {
     try {
       const result = xmlDoc
       const publications = result.querySelectorAll('dblpperson > r')
       const specificAuthor = result.querySelector('dblpperson > person > author').textContent
-      const categorizedCoAuthors = this.countCoAuthors(publications || [], specificAuthor)
+      const categorizedCoAuthors = this.countCoAuthors(publications || [], specificAuthor, closeColleagueParameter, acquaintanceParameter)
       await this.createChart(categorizedCoAuthors)
     } catch (error) {
       console.error('An error occurred:', error)
     }
   }
 
-  countCoAuthors(publications, specificAuthor) {
+  countCoAuthors (publications, specificAuthor, closeColleagueParameter, acquaintanceParameter) {
     const publicationsByCoAuthors = {}
     const coAuthorsByYear = {}
 
     Array.from(publications).forEach(publication => {
       let authors = Array.from(publication.children[0].children)
         .filter(element => element.tagName === 'author')
-        .map(author => author.textContent);
+        .map(author => author.textContent)
       let yearElement = Array.from(publication.children[0].children)
-        .find(element => element.tagName === 'year');
+        .find(element => element.tagName === 'year')
       if (yearElement) {
-        let year = parseInt(yearElement.innerHTML);
-        authors = authors.filter(authorName => authorName !== specificAuthor);
+        let year = parseInt(yearElement.innerHTML)
+        authors = authors.filter(authorName => authorName !== specificAuthor)
         authors.forEach(authorName => {
           if (!publicationsByCoAuthors[authorName]) {
-            publicationsByCoAuthors[authorName] = {};
+            publicationsByCoAuthors[authorName] = {}
           }
           if (!publicationsByCoAuthors[authorName][year]) {
-            publicationsByCoAuthors[authorName][year] = [];
+            publicationsByCoAuthors[authorName][year] = []
           }
-          publicationsByCoAuthors[authorName][year].push(publication);
+          publicationsByCoAuthors[authorName][year].push(publication)
 
           if (!coAuthorsByYear[year]) {
-            coAuthorsByYear[year] = new Set();
+            coAuthorsByYear[year] = new Set()
           }
-          coAuthorsByYear[year].add(authorName);
-        });
+          coAuthorsByYear[year].add(authorName)
+        })
       }
-    });
+    })
 
     // Define helper functions for categorization
     const isCloseColleague = (coAuthor, year) => {
-      const years = Object.keys(publicationsByCoAuthors[coAuthor]).map(Number);
-      return years.filter(y => y >= year - 3 && y <= year).length >= 3;
+      const years = Object.keys(publicationsByCoAuthors[coAuthor]).map(Number)
+      return years.filter(y => y >= year - closeColleagueParameter && y <= year).length >= closeColleagueParameter
     }
 
     const isAcquaintance = (coAuthor, year) => {
-      const years = Object.keys(publicationsByCoAuthors[coAuthor]).map(Number);
-      let count = 0;
-      for (let y = year - 4; y <= year; y++) {
+      const years = Object.keys(publicationsByCoAuthors[coAuthor]).map(Number)
+      let count = 0
+      for (let y = year - acquaintanceParameter; y <= year; y++) {
         if (years.includes(y)) {
-          count++;
-          if (count >= 3) return true;
+          count++
+          if (count >= (acquaintanceParameter - 1)) return true
         }
       }
-      return false;
+      return false
     }
 
     const isCollaborator = (coAuthor, year) => {
-      const years = Object.keys(publicationsByCoAuthors[coAuthor]).map(Number);
-      return Math.min(...years) === parseInt(year);
+      const years = Object.keys(publicationsByCoAuthors[coAuthor]).map(Number)
+      return Math.min(...years) === parseInt(year)
     }
 
     // Categorize each co-author for each year
-    const categorizedCoAuthors = {};
+    const categorizedCoAuthors = {}
     Object.keys(coAuthorsByYear).forEach(year => {
-      categorizedCoAuthors[year] = { closeColleague: 0, acquaintance: 0, collaborator: 0 };
+      categorizedCoAuthors[year] = { closeColleague: 0, acquaintance: 0, collaborator: 0 }
       coAuthorsByYear[year].forEach(coAuthor => {
         if (isCloseColleague(coAuthor, year)) {
-          categorizedCoAuthors[year].closeColleague++;
+          categorizedCoAuthors[year].closeColleague++
         } else if (isAcquaintance(coAuthor, year)) {
-          categorizedCoAuthors[year].acquaintance++;
+          categorizedCoAuthors[year].acquaintance++
         } else if (isCollaborator(coAuthor, year)) {
-          categorizedCoAuthors[year].collaborator++;
+          categorizedCoAuthors[year].collaborator++
         }
-      });
-    });
+      })
+    })
 
-    return categorizedCoAuthors;
+    return categorizedCoAuthors
   }
 
   // Function to create and save the chart

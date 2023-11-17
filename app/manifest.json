@@ -2,7 +2,7 @@
   "name": "DBLPExtension",
   "short_name": "DBLPExtension",
   "description": "New DBLP charts!",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "manifest_version": 3,
   "icons": {
     "16": "images/icon16.png",
@@ -31,7 +31,9 @@
     "open_in_tab": true
   },
   "permissions": [
-
+    "storage",
+    "tabs",
+    "unlimitedStorage"
   ],
   "web_accessible_resources": [
     {

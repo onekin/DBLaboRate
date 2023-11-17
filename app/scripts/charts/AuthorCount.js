@@ -7,18 +7,18 @@ class AuthorCount {
     this.configuration = null
   }
 
-  async init (xmlDoc) {
+  async init (xmlDoc, numberOfAuthorsParameter) {
     try {
       const result = xmlDoc
       const publications = result.querySelectorAll('dblpperson > r')
-      const yearCounts = this.countPublicationsByAuthorCount(publications)
-      await this.createChart(yearCounts)
+      const yearCounts = this.countPublicationsByAuthorCount(publications, numberOfAuthorsParameter)
+      await this.createChart(yearCounts, numberOfAuthorsParameter)
     } catch (error) {
       console.error('An error occurred:', error)
     }
   }
 
-  countPublicationsByAuthorCount (publications) {
+  countPublicationsByAuthorCount (publications, numberOfAuthorsParameter) {
     const authorCountCategories = {
       threeOrLessAuthors: {},
       moreThanThreeAuthors: {}
@@ -29,18 +29,17 @@ class AuthorCount {
       let year = Array.from(publication.children[0].children).find(element => element.tagName === 'year').innerHTML
 
       // Categorize by number of authors
-      if (authors.length <= 3) {
+      if (authors.length <= numberOfAuthorsParameter) {
         authorCountCategories.threeOrLessAuthors[year] = (authorCountCategories.threeOrLessAuthors[year] || 0) + 1
       } else {
         authorCountCategories.moreThanThreeAuthors[year] = (authorCountCategories.moreThanThreeAuthors[year] || 0) + 1
       }
     })
-
     return authorCountCategories
   }
 
   // Function to create and save the chart
-  async createChart (authorCountCategories) {
+  async createChart (authorCountCategories, numberOfAuthorsParameter) {
     const sortedYears = Object.keys({
       ...authorCountCategories.threeOrLessAuthors,
       ...authorCountCategories.moreThanThreeAuthors
@@ -48,13 +47,13 @@ class AuthorCount {
 
     const datasets = [
       {
-        label: '3 or Fewer Authors',
+        label: numberOfAuthorsParameter + ' or Fewer Authors',
         data: sortedYears.map(year => authorCountCategories.threeOrLessAuthors[year] || 0),
         backgroundColor: 'rgba(75, 192, 192)', // Color for the '3 or Fewer Authors' category
         stack: 'stacked'
       },
       {
-        label: 'More Than 3 Authors',
+        label: 'More Than ' + numberOfAuthorsParameter + ' Authors',
         data: sortedYears.map(year => authorCountCategories.moreThanThreeAuthors[year] || 0),
         backgroundColor: 'rgba(153, 102, 255)', // Color for the 'More Than 3 Authors' category
         stack: 'stacked'
