@@ -72,7 +72,7 @@ class AuthorPositionChart {
         stack: 'stacked' // This indicates that the bar should be stacked
       },
       {
-        label: 'More Than Third Author',
+        label: 'Beyond Third Author',
         data: sortedYears.map(year => authorPositionCounts.moreThanThirdAuthor[year] || 0),
         backgroundColor: 'rgba(255, 206, 86)',
         stack: 'stacked' // This indicates that the bar should be stacked

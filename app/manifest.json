@@ -1,8 +1,8 @@
 {
-  "name": "DBLPExtension",
-  "short_name": "DBLPExtension",
-  "description": "This extension adds new charts in DBLP to !",
-  "version": "0.1.2",
+  "name": "DBLaboRate",
+  "short_name": "DBLaboRate",
+  "description": "This extension automatically renders different charts in DBLP author's profile out of the publications.",
+  "version": "0.2.2",
   "manifest_version": 3,
   "icons": {
     "16": "images/dlaborateIcon.png",
@@ -22,8 +22,8 @@
     }
   ],
   "action": {
-    "default_icon": "images/icon48.png",
-    "default_title": "DBLPExtension"
+    "default_icon": "images/dlaborateIcon.png",
+    "default_title": "DBLaboRate"
   },
   "options_page": "pages/options.html",
   "options_ui": {
