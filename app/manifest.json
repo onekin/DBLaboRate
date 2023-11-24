@@ -1,13 +1,13 @@
 {
   "name": "DBLPExtension",
   "short_name": "DBLPExtension",
-  "description": "New DBLP charts!",
+  "description": "This extension adds new charts in DBLP to !",
   "version": "0.1.2",
   "manifest_version": 3,
   "icons": {
-    "16": "images/icon16.png",
-    "48": "images/icon48.png",
-    "128": "images/icon128.png"
+    "16": "images/dlaborateIcon.png",
+    "48": "images/dlaborateIcon.png",
+    "128": "images/dlaborateIcon.png"
   },
   "background": {
     "service_worker": "scripts/background.js"
