@@ -11,4 +11,4 @@ To compile the project, you only need to execute the following lines, but make s
 	$ npm install
 	$ gulp default
 
-
+After that, you will find the app in the dist folder.
